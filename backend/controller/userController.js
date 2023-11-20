@@ -104,36 +104,40 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
 export const googleLoginOrRegister = asyncHandler(async (req, res) => {
 
-  try {
-    const user = User.findOne({ email: req.body.email });
+  const { name, email, photoURL, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user && (await user.matchPassword(password))) {
+    generateToken(res, user._id);
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      photoURL: user.photoURL,
+    });
+  } else if (user && !(await user.matchPassword(password))) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  } else {
+    const user = await User.create({
+      name,
+      email,
+      photoURL,
+      password,
+    });
 
     if (user) {
       generateToken(res, user._id);
-      return res.status(200).json({
+      res.status(201).json({
         _id: user._id,
         name: user.name,
         email: user.email,
         photoURL: user.photoURL,
       });
     } else {
-      const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        photoURL: req.body.photoURL,
-        password: req.body.password,
-      });
-
-      generateToken(res, newUser._id);
-      return res.status(201).json({
-        _id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        photoURL: newUser.photoURL,
-      });
+      res.status(400);
+      throw new Error("Invalid user data");
     }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Server error",
-    });
   }
 });

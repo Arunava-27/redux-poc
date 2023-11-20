@@ -5,13 +5,15 @@ import firebaseApp from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { useGoogleLoginOrRegisterMutation } from "../features/user/userSlice";
 import { setCredentials } from "../features/auth/authSlice";
+import Loader from "./Loader";
 
 const OAuth = () => {
   const dispatch = useDispatch();
 
   const page = window.location.pathname === "/register" ? "register" : "login";
 
-  const [googleLoginOrRegister] = useGoogleLoginOrRegisterMutation();
+  const [googleLoginOrRegister, { isLoading }] =
+    useGoogleLoginOrRegisterMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -58,6 +60,7 @@ const OAuth = () => {
     flex items-center justify-center gap-2
     "
     >
+        {isLoading && <Loader />}
       <span>
         {page === "register" ? "Sign Up with google" : "Sign In with google"}
       </span>{" "}

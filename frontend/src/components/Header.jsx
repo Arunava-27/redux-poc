@@ -30,6 +30,8 @@ function Header() {
 
   const { userInfo } = useSelector((state) => state.auth);
 
+  const photoURL = userInfo?.photoURL;
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -97,7 +99,7 @@ function Header() {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={ userInfo.photoURL ? userInfo.photoURL : "https://beforeigosolutions.com/wp-content/uploads/2021/12/dummy-profile-pic-300x300-1.png"}
+                            src={photoURL? photoURL : "https://beforeigosolutions.com/wp-content/uploads/2021/12/dummy-profile-pic-300x300-1.png"}
                             alt=""
                           />
                         </Menu.Button>
