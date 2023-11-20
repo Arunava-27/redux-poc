@@ -28,7 +28,7 @@ The project is organized into two main folders:
 4. **Set up the backend environment variables:**
 Create a `.env` file in the root of the `backend` folder and add the following:
 	```bash
-	NODE_ENV=production 
+	NODE_ENV=development 
 	PORT=8080 
 	DB_URL=mongodb+srv://<username>:<password>@<your-mongodb-uri>/redux?retryWrites=true&w=majority 
 	JWT_SECRET=<your-jwt-secret>
