@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -14,14 +15,28 @@ import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-import "bootstrap/dist/css/bootstrap.min.css";
+import FormContainer from "./components/FormContainer.jsx";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/login"
+        element={
+          <FormContainer>
+            <LoginPage />
+          </FormContainer>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <FormContainer>
+            <RegisterPage />
+          </FormContainer>
+        }
+      />
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<ProfilePage />} />

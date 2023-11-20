@@ -1,15 +1,13 @@
 /* eslint-disable react/prop-types */
-import { Container, Row, Col } from "react-bootstrap";
-
 const FormContainer = ({ children }) => {
   return (
-    <Container>
-      <Row className="justify-content-md-center mt-5">
-        <Col xs={12} md={6} className="card p-5">
+    <div className="container mx-auto mt-5">
+      <div className="flex justify-center">
+        <div className="w-full md:w-1/2 bg-transparent shadow p-8">
           {children}
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 

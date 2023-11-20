@@ -1,29 +1,35 @@
-import { Container, Card, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <div className=' py-5'>
-      <Container className='d-flex justify-content-center'>
-        <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-75'>
-          <h1 className='text-center mb-4'>REDUX Authentication</h1>
-          <p className='text-center mb-4'>
-            This is a boilerplate for REDUX authentication that stores a JWT in
-            an HTTP-Only cookie. It uses Redux Toolkit and the React
-            Bootstrap library
+    <div className="py-5">
+      <div className="container mx-auto flex justify-center">
+        <div className="p-5 flex flex-col items-center bg-gray-200 w-3/4">
+          <h1 className="text-center mb-4 text-3xl font-bold">
+            Proof of Concept App
+          </h1>
+          <p className="text-center mb-4">
+            This is a POC for using REDUX authentication that stores a JWT in an
+            HTTP-Only cookie also uses OAuth. It uses Redux Toolkit and the
+            Tailwind CSS library. Login or Register to view the POC
+            docoumentation.
           </p>
-          <div className='d-flex'>
-            <LinkContainer to='/login'>
-              <Button variant='primary' className='me-3'>
-                Sign In
-              </Button>
-            </LinkContainer>
-            <LinkContainer to='/register'>
-              <Button variant='secondary'>Register</Button>
-            </LinkContainer>
+          <div className="flex">
+            <Link
+              to="/login"
+              className="bg-blue-500 text-white py-2 px-4 rounded mr-3"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/register"
+              className="bg-gray-500 text-white py-2 px-4 rounded"
+            >
+              Register
+            </Link>
           </div>
-        </Card>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };
