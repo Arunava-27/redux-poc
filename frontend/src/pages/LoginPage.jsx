@@ -40,7 +40,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container my-10 mx-auto p-6 sm:p-10 border-blue-500 border-2 rounded-xl bg-gradient-to-tl from-green-500 via-yellow-500 to-red-500">
+    <div className="container mx-auto p-6 sm:p-10 border-blue-500 border-2 rounded-xl bg-gradient-to-tl from-green-500 via-yellow-500 to-red-500">
       <h1 className="text-3xl font-bold mb-6 text-center text-white underline">
         Sign In
       </h1>

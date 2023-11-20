@@ -101,3 +101,39 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+export const googleLoginOrRegister = asyncHandler(async (req, res) => {
+
+  try {
+    const user = User.findOne({ email: req.body.email });
+
+    if (user) {
+      generateToken(res, user._id);
+      return res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        photoURL: user.photoURL,
+      });
+    } else {
+      const newUser = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        photoURL: req.body.photoURL,
+        password: req.body.password,
+      });
+
+      generateToken(res, newUser._id);
+      return res.status(201).json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        photoURL: newUser.photoURL,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});

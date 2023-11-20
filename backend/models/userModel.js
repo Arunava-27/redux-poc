@@ -11,6 +11,10 @@ const userSchema = mongoose.Schema({
     required: true,
     unique: true, // unique email
   },
+  photoURL: {
+    type: String,
+    required: false, // if user doesn't have a photo
+  },
   password: {
     type: String,
     required: true,

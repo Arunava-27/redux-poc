@@ -17,6 +17,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        googleLoginOrRegister: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/google`,
+                method: "POST",
+                body: data,
+            }),
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: `${USERS_URL}/logout`,
@@ -33,4 +40,4 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
 }); 
 
-export const { useLoginMutation, useRegisterMutation ,useLogoutMutation, useUpdateUserMutation } = usersApiSlice;
+export const { useLoginMutation, useRegisterMutation ,useLogoutMutation, useUpdateUserMutation, useGoogleLoginOrRegisterMutation } = usersApiSlice;

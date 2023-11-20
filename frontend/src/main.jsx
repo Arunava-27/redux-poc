@@ -39,7 +39,11 @@ const routes = createBrowserRouter(
       />
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile" element={
+          <FormContainer>
+            <ProfilePage />
+          </FormContainer>
+        } />
       </Route>
     </Route>
   )
