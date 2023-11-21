@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useEffect} from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../features/user/userSlice";
 import { setCredentials } from "../features/auth/authSlice";
 import OAuth from "../components/OAuth";
@@ -8,17 +10,8 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 const RegisterPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const [register, { isLoading }] = useRegisterMutation();
-
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -27,31 +20,44 @@ const RegisterPage = () => {
     }
   }, [navigate, userInfo]);
 
-  const toggleShowPassword = () => setShowPassword(!showPassword);
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      const res = await register({ name, email, password });
-      dispatch(setCredentials({ ...res }));
-      navigate("/");
-    } catch (err) {
-      toast.error(err?.data?.message || err?.error);
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string().required("Required"),
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const res = await register({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        });
+        dispatch(setCredentials({ ...res }));
+        navigate("/");
+      } catch (err) {
+        toast.error(err?.data?.message || err?.error);
+      }
+    },
+  });
 
   return (
     <div className="container mx-auto p-6 sm:p-10 border-blue-500 border-2 rounded-xl bg-gradient-to-tl from-green-500 via-yellow-500 to-red-500">
       <h1 className="text-3xl font-bold mb-6 text-center text-white underline">
         Sign Up
       </h1>
-      <form onSubmit={submitHandler} className="max-w-md mx-auto">
+      <form onSubmit={formik.handleSubmit} className="max-w-md mx-auto">
         <div className="mb-6">
           <label
             htmlFor="name"
@@ -62,11 +68,18 @@ const RegisterPage = () => {
           <input
             type="name"
             id="name"
-            className="mt-1 p-3 border w-full rounded"
+            name="name"
+            className={`mt-1 p-3 border w-full rounded ${
+              formik.touched.name && formik.errors.name ? "border-red-500" : ""
+            }`}
             placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.name && formik.errors.name && (
+            <div className="text-red-500 text-sm">{formik.errors.name}</div>
+          )}
         </div>
         <div className="mb-6">
           <label
@@ -78,11 +91,20 @@ const RegisterPage = () => {
           <input
             type="email"
             id="email"
-            className="mt-1 p-3 border w-full rounded"
+            name="email"
+            className={`mt-1 p-3 border w-full rounded ${
+              formik.touched.email && formik.errors.email
+                ? "border-red-500"
+                : ""
+            }`}
             placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.email && formik.errors.email && (
+            <div className="text-red-500 text-sm">{formik.errors.email}</div>
+          )}
         </div>
         <div className="mb-6 relative">
           <label
@@ -92,38 +114,46 @@ const RegisterPage = () => {
             Password
           </label>
           <input
-            type={showPassword ? "text" : "password"}
+            type={formik.values.showPassword ? "text" : "password"}
             id="password"
-            className="mt-1 p-3 border w-full rounded"
+            name="password"
+            className={`mt-1 p-3 border w-full rounded ${
+              formik.touched.password && formik.errors.password
+                ? "border-red-500"
+                : ""
+            }`}
             placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
           <button
             type="button"
             className="absolute top-[66%] right-[0.5rem] transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded"
-            onClick={toggleShowPassword}
+            onClick={() =>
+              formik.setFieldValue("showPassword", !formik.values.showPassword)
+            }
           >
-            {showPassword ? (
+            {formik.values.showPassword ? (
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -141,6 +171,11 @@ const RegisterPage = () => {
               </svg>
             )}
           </button>
+          {formik.touched.password && formik.errors.password && (
+            <div className="text-red-500 text-sm">
+              {formik.errors.password}
+            </div>
+          )}
         </div>
         <div className="mb-6">
           <label
@@ -150,13 +185,24 @@ const RegisterPage = () => {
             Confirm Password
           </label>
           <input
-            type={showPassword ? "text" : "password"}
+            type={formik.values.showPassword ? "text" : "password"}
             id="confirmPassword"
-            className="mt-1 p-3 border w-full rounded"
+            name="confirmPassword"
+            className={`mt-1 p-3 border w-full rounded ${
+              formik.touched.confirmPassword && formik.errors.confirmPassword
+                ? "border-red-500"
+                : ""
+            }`}
             placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            <div className="text-red-500 text-sm">
+              {formik.errors.confirmPassword}
+            </div>
+          )}
         </div>
         {isLoading && <Loader />}
         <button
