@@ -32,7 +32,7 @@ const RegisterPage = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Required"),
       email: Yup.string().email("Invalid email address").required("Required"),
-      password: Yup.string().required("Required"),
+      password: Yup.string().required("Required").length(8),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Required"),
@@ -61,7 +61,7 @@ const RegisterPage = () => {
         <div className="mb-6">
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-white"
           >
             Name
           </label>
@@ -84,7 +84,7 @@ const RegisterPage = () => {
         <div className="mb-6">
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-white"
           >
             Email Address
           </label>
@@ -109,7 +109,7 @@ const RegisterPage = () => {
         <div className="mb-6 relative">
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-white"
           >
             Password
           </label>
@@ -180,7 +180,7 @@ const RegisterPage = () => {
         <div className="mb-6">
           <label
             htmlFor="confirmPassword"
-            className="block text-sm font-medium text-gray-600"
+            className="block text-sm font-medium text-white"
           >
             Confirm Password
           </label>
