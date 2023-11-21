@@ -7,6 +7,7 @@ Proof of Concept using redux, redux toolkit and OAuth
 
 The project is organized into two main folders: 
 -  `backend`: Node.js server using Express.js
+-  `database`: MongoDB
 -  `frontend`: React.js application using Vite 
 
 ## Getting Started 
